@@ -1,5 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart } from "../redux/CartSlice";
+import { addItem } from "../redux/CartSlice";
+
+const ProductList = () => {
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.items);
 
 const plants = {
   indoor: [
@@ -20,35 +24,43 @@ const plants = {
   ]
 };
 
-
-function ProductList() {
-  const dispatch = useDispatch();
-  const cartItems = useSelector(state => state.cart.items);
-
-  const isAdded = id => cartItems.some(i => i.id === id);
+ const isAddedToCart = (id) =>
+    cartItems.some((item) => item.id === id);
 
   return (
-    <div>
-      <h2>Plant List</h2>
+    <div className="product-list">
+      {Object.keys(plants).map((category) => (
+        <div key={category}>
+          <h2>{category.toUpperCase()} PLANTS</h2>
 
-      {["Succulent", "Flower", "Indoor"].map(cat => (
-        <div key={cat}>
-          <h3>{cat}</h3>
-          {plants.filter(p => p.category === cat).map(p => (
-            <div key={p.id}>
-              <span>{p.name} - ${p.price}</span>
-              <button
-                disabled={isAdded(p.id)}
-                onClick={() => dispatch(addToCart(p))}
-              >
-                Add Item
-              </button>
-            </div>
-          ))}
+          <div className="plant-grid">
+            {plants[category].map((plant) => (
+              <div className="plant-card" key={plant.id}>
+                {/* ✅ Thumbnail image */}
+                <img
+                  src={plant.image}
+                  alt={plant.name}
+                  className="plant-image"
+                />
+
+                <h4>{plant.name}</h4>
+                <p>Price: ${plant.price}</p>
+
+                <button
+                  onClick={() => dispatch(addItem(plant))}
+                  disabled={isAddedToCart(plant.id)}
+                >
+                  {isAddedToCart(plant.id)
+                    ? "Added to Cart"
+                    : "Add to Cart"}
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       ))}
     </div>
   );
-}
+};
 
 export default ProductList;
