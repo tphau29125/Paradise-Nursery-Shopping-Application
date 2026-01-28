@@ -1,29 +1,29 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import ProductList from "./components/ProductList";
-import CartItem from "./components/CartItem";
-import AboutUs from "./components/AboutUs";
+import React, { useState } from "react";
 import "./App.css";
+import ProductList from "./components/ProductList";
 
 function App() {
+  const [showProducts, setShowProducts] = useState(false);
+
+  const handleGetStartedClick = () => {
+    setShowProducts(true);
+  };
+
   return (
-    <BrowserRouter>
-      <Navbar />
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <div className="landing">
-              <h1>Paradise Nursery</h1>
-              <a href="/plants" className="btn">Get Started</a>
-            </div>
-          }
-        />
-        <Route path="/plants" element={<ProductList />} />
-        <Route path="/cart" element={<CartItem />} />
-        <Route path="/about" element={<AboutUs />} />
-      </Routes>
-    </BrowserRouter>
+    <div className="background-image">
+      {!showProducts ? (
+        <div className="landing-content">
+          <h1>Paradise Nursery</h1>
+          <p>Discover a wide variety of beautiful and healthy plants.</p>
+
+          <button onClick={handleGetStartedClick}>
+            Get Started
+          </button>
+        </div>
+      ) : (
+        <ProductList />
+      )}
+    </div>
   );
 }
 

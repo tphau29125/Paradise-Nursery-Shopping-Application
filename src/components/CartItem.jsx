@@ -1,42 +1,37 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { increaseQty, decreaseQty, removeItem } from "../redux/CartSlice";
-import { Link } from "react-router-dom";
 
-function CartItem() {
+const CartItem = ({ item }) => {
   const dispatch = useDispatch();
-  const items = useSelector(state => state.cart.items);
 
-  const total = items.reduce(
-    (sum, i) => sum + i.price * i.quantity,
-    0
-  );
+  const handleIncrement = () => {
+    dispatch(increaseQty(item.id));
+  };
+
+  const handleDecrement = () => {
+    dispatch(decreaseQty(item.id));
+  };
+
+  const handleDelete = () => {
+    dispatch(removeItem(item.id));
+  };
 
   return (
-    <div>
-      <h2>Shopping Cart</h2>
+    <div className="cart-item">
+      <h4>{item.name}</h4>
+      <p>Price: ${item.price}</p>
 
-      {items.map(item => (
-        <div key={item.id}>
-          <span>{item.name}</span>
-          <span> ${item.price}</span>
-          <span> Total: ${item.price * item.quantity}</span>
+      <div className="quantity-controls">
+        <button onClick={handleDecrement}>-</button>
+        <span>{item.quantity}</span>
+        <button onClick={handleIncrement}>+</button>
+      </div>
 
-          <button onClick={() => dispatch(decreaseQty(item.id))}>-</button>
-          <span>{item.quantity}</span>
-          <button onClick={() => dispatch(increaseQty(item.id))}>+</button>
+      <p>Total: ${item.price * item.quantity}</p>
 
-          <button onClick={() => dispatch(removeItem(item.id))}>Delete</button>
-        </div>
-      ))}
-
-      <h3>Total Amount: ${total}</h3>
-
-      <button onClick={() => alert("Coming Soon")}>Checkout</button>
-      <Link to="/plants">
-        <button>Continue Shopping</button>
-      </Link>
+      <button onClick={handleDelete}>Delete</button>
     </div>
   );
-}
+};
 
 export default CartItem;
